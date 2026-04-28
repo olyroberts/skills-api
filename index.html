@@ -720,7 +720,7 @@ Return ONLY a JSON array like this:
 No other text. Just the JSON array.`;
 
     try {
-      const response = await fetch('/.netlify/functions/claude', {
+      const response = await fetch('/api/claude', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -802,7 +802,7 @@ Create a document with these sections:
 Write in plain English. Be specific to their actual transition — not generic career advice. Avoid corporate jargon.`;
 
     try {
-      const response = await fetch('/.netlify/functions/claude', {
+      const response = await fetch('/api/claude', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
