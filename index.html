@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills Translator — Find Your Language in a New Industry</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --cream: #f5f0e8;
+    --warm: #e8ddd0;
+    --accent: #c17f3b;
+    --accent-light: #e8a55a;
+    --muted: #8a8070;
+    --success: #3b7a5a;
+    --border: #d4c9b8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 2rem 2rem 2.5rem;
+    text-align: center;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  header h1 span {
+    color: var(--accent-light);
+  }
+
+  header p {
+    font-size: 1rem;
+    color: #b0a898;
+    font-weight: 300;
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* MAIN CONTAINER */
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* STEPS INDICATOR */
+  .steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .step-dot.active {
+    background: var(--accent);
+    transform: scale(1.3);
+  }
+
+  .step-dot.done {
+    background: var(--success);
+  }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    display: none;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .card.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .card p.hint {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  /* INPUTS */
+  input[type="text"], textarea, select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 1rem;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    background: white;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+
+  label.field-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  /* CHECKBOXES & RADIOS */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .options-grid.single { grid-template-columns: 1fr; }
+
+  .option-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+  }
+
+  .option-item:hover { border-color: var(--accent-light); background: white; }
+
+  .option-item input { 
+    margin-top: 2px; 
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .option-item span {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  .option-item.selected {
+    border-color: var(--accent);
+    background: #fdf6ee;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.9rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .btn-primary:hover { background: #a66d2e; transform: translateY(-1px); }
+  .btn-primary:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+  .btn-back {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    margin-right: 0.75rem;
+  }
+
+  .btn-back:hover { border-color: var(--muted); color: var(--ink); }
+
+  .btn-row {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .btn-row .btn-primary { flex: 1; margin-top: 0; }
+
+  /* LOADING */
+  .loading-card {
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1.5rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .loading-card p { color: var(--muted); font-size: 0.9rem; }
+
+  /* DYNAMIC QUESTIONS */
+  .dynamic-question {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dynamic-question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .dynamic-question .q-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .dynamic-question .q-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .result-header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 1.5rem 2rem;
+  }
+
+  .result-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .result-header p { font-size: 0.85rem; color: #b0a898; }
+
+  .result-body {
+    padding: 2rem;
+    white-space: pre-wrap;
+    font-size: 0.925rem;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .result-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .result-body h3:first-child { margin-top: 0; }
+
+  .copy-btn {
+    display: block;
+    width: calc(100% - 4rem);
+    margin: 0 2rem 2rem;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    border-radius: 10px;
+    padding: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { background: #2d2d4a; }
+
+  .restart-btn {
+    display: block;
+    width: calc(100% - 4rem);
+    margin: 0 2rem 2rem;
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover { border-color: var(--muted); color: var(--ink); }
+
+  /* ERROR */
+  .error-msg {
+    background: #fff0f0;
+    border: 1px solid #ffcccc;
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: #c0392b;
+    margin-top: 1rem;
+    display: none;
+  }
+
+  /* API KEY SETUP */
+  .api-setup {
+    background: #fffbf5;
+    border: 1.5px dashed var(--accent-light);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .api-setup strong { color: var(--ink); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  @media (max-width: 500px) {
+    .options-grid { grid-template-columns: 1fr; }
+    header { padding: 1.5rem 1rem 2rem; }
+    .card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Skills <span>Translator</span></h1>
+  <p>Your experience is more valuable than you think — it just needs to speak a new language.</p>
+</header>
+
+<div class="container">
+
+  <!-- API KEY (hidden in production — replace YOUR_KEY below) -->
+  <!-- API key is stored securely in Netlify environment variables -->
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+
+  <div class="steps" id="stepsIndicator"></div>
+
+  <!-- SCREEN 1: Transition overview -->
+  <div class="card active" id="screen1">
+    <div class="card-label">Step 1 of 4</div>
+    <h2>Where are you coming from — and where are you going?</h2>
+    <p class="hint">Be as specific as you can. The more precise, the better your translation will be.</p>
+
+    <label class="field-label">Your current or most recent role & industry</label>
+    <input type="text" id="currentRole" placeholder="e.g. Senior Accountant in financial services" />
+
+    <label class="field-label">How many years in this role or field?</label>
+    <div class="options-grid">
+      <label class="option-item"><input type="radio" name="years" value="Less than 3 years"><span>Less than 3 years</span></label>
+      <label class="option-item"><input type="radio" name="years" value="3–7 years"><span>3–7 years</span></label>
+      <label class="option-item"><input type="radio" name="years" value="8–15 years"><span>8–15 years</span></label>
+      <label class="option-item"><input type="radio" name="years" value="15+ years"><span>15+ years</span></label>
+    </div>
+
+    <label class="field-label">Target role & industry you want to move into</label>
+    <input type="text" id="targetRole" placeholder="e.g. Motion Designer in advertising or tech" />
+
+    <label class="field-label">What have you already done in this new direction? (choose all that apply)</label>
+    <div class="options-grid">
+      <label class="option-item"><input type="checkbox" value="Completed courses or training"><span>Completed courses or training</span></label>
+      <label class="option-item"><input type="checkbox" value="Built personal projects or portfolio"><span>Built personal projects or portfolio</span></label>
+      <label class="option-item"><input type="checkbox" value="Done freelance or volunteer work"><span>Done freelance or volunteer work</span></label>
+      <label class="option-item"><input type="checkbox" value="Nothing yet — just starting"><span>Nothing yet — just starting</span></label>
+    </div>
+
+    <div class="error-msg" id="error1">Please fill in your current role, target role, and select how many years.</div>
+    <button class="btn-primary" onclick="goToScreen2()">Continue →</button>
+  </div>
+
+  <!-- SCREEN 2: What you do & how you work -->
+  <div class="card" id="screen2">
+    <div class="card-label">Step 2 of 4</div>
+    <h2>What you actually do — not what your job title says</h2>
+    <p class="hint">Think about what really happens in your day-to-day work, not the formal description.</p>
+
+    <label class="field-label">What do people most often ask you to help with at work? (choose up to 3)</label>
+    <div class="options-grid">
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Explain something complex clearly"><span>Explain something complex clearly</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Find information or a quick solution"><span>Find information or a quick solution</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Organise or create order from chaos"><span>Organise or create order from chaos</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Make something look better or clearer"><span>Make something look better or clearer</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Write, edit or formulate something"><span>Write, edit or formulate something</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Solve a technical problem"><span>Solve a technical problem</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Handle something urgent right now"><span>Handle something urgent right now</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Negotiate or mediate between people"><span>Negotiate or mediate between people</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Check details and catch errors"><span>Check details and catch errors</span></label>
+      <label class="option-item"><input type="checkbox" name="askedFor" value="Listen, support or advise"><span>Listen, support or advise</span></label>
+    </div>
+
+    <label class="field-label">What tasks have you often done at work without being asked — because it needed doing?</label>
+    <div class="options-grid">
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Fixed things that were 'good enough' but could be better"><span>Fixed things that were 'good enough' but could be better</span></label>
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Created order in processes or systems"><span>Created order in processes or systems</span></label>
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Helped colleagues figure things out"><span>Helped colleagues figure things out</span></label>
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Spotted a problem before it became bigger"><span>Spotted a problem before it became bigger</span></label>
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Made something visually cleaner or clearer"><span>Made something visually cleaner or clearer</span></label>
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Suggested a better way to do something"><span>Suggested a better way to do something</span></label>
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Found solutions independently instead of waiting"><span>Found solutions independently instead of waiting</span></label>
+      <label class="option-item"><input type="checkbox" name="selfInit" value="Checked details so nothing fell through the cracks"><span>Checked details so nothing fell through the cracks</span></label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goToScreen(1)">← Back</button>
+      <button class="btn-primary" onclick="goToScreen3()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Strengths & Tools -->
+  <div class="card" id="screen3">
+    <div class="card-label">Step 3 of 4</div>
+    <h2>When you're at your best — and what you use</h2>
+    <p class="hint">Think of a specific moment, not a general feeling.</p>
+
+    <label class="field-label">When do you most often surprise yourself by doing better than expected? (choose up to 3)</label>
+    <div class="options-grid">
+      <label class="option-item"><input type="checkbox" name="strengths" value="When I need to understand something complex"><span>When I need to understand something complex</span></label>
+      <label class="option-item"><input type="checkbox" name="strengths" value="When there's a clear goal and I need to deliver"><span>When there's a clear goal and I need to deliver</span></label>
+      <label class="option-item"><input type="checkbox" name="strengths" value="When everything is unclear and I need to create order"><span>When everything is unclear and I need to create order</span></label>
+      <label class="option-item"><input type="checkbox" name="strengths" value="When I need to find a solution fast"><span>When I need to find a solution fast</span></label>
+      <label class="option-item"><input type="checkbox" name="strengths" value="When accuracy and detail matter"><span>When accuracy and detail matter</span></label>
+      <label class="option-item"><input type="checkbox" name="strengths" value="When I need to rethink how something is done"><span>When I need to rethink how something is done</span></label>
+      <label class="option-item"><input type="checkbox" name="strengths" value="Under time pressure"><span>Under time pressure</span></label>
+      <label class="option-item"><input type="checkbox" name="strengths" value="When working with people"><span>When working with people</span></label>
+    </div>
+
+    <label class="field-label">Tools and software you use regularly at work</label>
+    <div class="options-grid">
+      <label class="option-item"><input type="checkbox" name="tools" value="Excel / Google Sheets"><span>Excel / Google Sheets</span></label>
+      <label class="option-item"><input type="checkbox" name="tools" value="PowerPoint / Google Slides"><span>PowerPoint / Google Slides</span></label>
+      <label class="option-item"><input type="checkbox" name="tools" value="Word / Google Docs"><span>Word / Google Docs</span></label>
+      <label class="option-item"><input type="checkbox" name="tools" value="Project management tools (Asana, Trello, Notion)"><span>Project management tools (Asana, Trello, Notion)</span></label>
+      <label class="option-item"><input type="checkbox" name="tools" value="Design tools (Canva, Figma, Adobe)"><span>Design tools (Canva, Figma, Adobe)</span></label>
+      <label class="option-item"><input type="checkbox" name="tools" value="CRM or sales tools"><span>CRM or sales tools</span></label>
+      <label class="option-item"><input type="checkbox" name="tools" value="Accounting or finance software"><span>Accounting or finance software</span></label>
+      <label class="option-item"><input type="checkbox" name="tools" value="AI tools (ChatGPT, Claude, Midjourney)"><span>AI tools (ChatGPT, Claude, Midjourney)</span></label>
+    </div>
+
+    <label class="field-label">Other tools not listed above</label>
+    <input type="text" id="otherTools" placeholder="e.g. SAP, Salesforce, After Effects..." />
+
+    <label class="field-label">Describe one specific piece of work you're proud of — what did you actually do?</label>
+    <textarea id="proudWork" placeholder="e.g. I restructured our monthly reporting process — reduced it from 3 days to 4 hours by building a template that automated the data pulls..."></textarea>
+
+    <label class="field-label">What from your current work do you absolutely NOT want to bring into your new role?</label>
+    <textarea id="dontWant" placeholder="e.g. Endless meetings, reporting to multiple managers, no creative freedom..."></textarea>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goToScreen(2)">← Back</button>
+      <button class="btn-primary" onclick="generateQuestions()">Generate my questions →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Loading questions -->
+  <div class="card" id="screenLoadingQ">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <h3>Analysing your transition...</h3>
+      <p>Preparing questions specific to your career move</p>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: Dynamic questions -->
+  <div class="card" id="screen5">
+    <div class="card-label">Step 4 of 4</div>
+    <h2>A few more questions specific to your transition</h2>
+    <p class="hint">These are generated based on your particular career move. Answer as honestly as you can.</p>
+    <div id="dynamicQuestionsContainer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goToScreen(3)">← Back</button>
+      <button class="btn-primary" onclick="generateResult()">Translate my skills →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: Loading result -->
+  <div class="card" id="screenLoadingR">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <h3>Translating your skills...</h3>
+      <p>This usually takes 20–30 seconds</p>
+    </div>
+  </div>
+
+  <!-- SCREEN 7: Result -->
+  <div class="card" id="screenResult">
+    <div class="result-card">
+      <div class="result-header">
+        <h2>Your Skills Translation</h2>
+        <p id="resultSubtitle"></p>
+      </div>
+      <div class="result-body" id="resultContent"></div>
+      <button class="copy-btn" onclick="copyResult()">Copy to clipboard</button>
+      <button class="restart-btn" onclick="restart()">Start a new translation</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // =============================================
+  // CONFIGURATION — replace with your API key
+  // =============================================
+  
+  // =============================================
+
+  let currentScreen = 1;
+  let dynamicQuestions = [];
+  let allAnswers = {};
+
+  const totalScreens = 4;
+
+  function updateProgress(step) {
+    const pct = (step / totalScreens) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    // Update dots
+    const container = document.getElementById('stepsIndicator');
+    container.innerHTML = '';
+    for (let i = 1; i <= totalScreens; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'step-dot' + (i === step ? ' active' : i < step ? ' done' : '');
+      container.appendChild(dot);
+    }
+  }
+
+  function goToScreen(n) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    const screens = {
+      1: 'screen1', 2: 'screen2', 3: 'screen3',
+      'loadQ': 'screenLoadingQ', 5: 'screen5',
+      'loadR': 'screenLoadingR', 7: 'screenResult'
+    };
+    const el = document.getElementById(screens[n]);
+    if (el) { el.classList.add('active'); window.scrollTo(0, 0); }
+    currentScreen = n;
+    if (typeof n === 'number' && n <= 4) updateProgress(n);
+  }
+
+  // Checkbox visual selection
+  document.querySelectorAll('.option-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const input = item.querySelector('input');
+      if (input.type === 'radio') {
+        document.querySelectorAll(`input[name="${input.name}"]`).forEach(r => {
+          r.closest('.option-item').classList.remove('selected');
+        });
+        item.classList.add('selected');
+      } else {
+        item.classList.toggle('selected', input.checked);
+      }
+    });
+  });
+
+  function getChecked(name) {
+    return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i => i.value);
+  }
+
+  function getCheckedGeneric(selector) {
+    return [...document.querySelectorAll(selector + ':checked')].map(i => i.value);
+  }
+
+  function showError(id, show) {
+    document.getElementById(id).style.display = show ? 'block' : 'none';
+  }
+
+  function goToScreen2() {
+    const current = document.getElementById('currentRole').value.trim();
+    const target = document.getElementById('targetRole').value.trim();
+    const years = document.querySelector('input[name="years"]:checked');
+    if (!current || !target || !years) { showError('error1', true); return; }
+    showError('error1', false);
+    allAnswers.currentRole = current;
+    allAnswers.targetRole = target;
+    allAnswers.years = years.value;
+    allAnswers.alreadyDone = getCheckedGeneric('#screen1 input[type="checkbox"]');
+    updateProgress(2);
+    goToScreen(2);
+  }
+
+  function goToScreen3() {
+    allAnswers.askedFor = getChecked('askedFor');
+    allAnswers.selfInit = getChecked('selfInit');
+    updateProgress(3);
+    goToScreen(3);
+  }
+
+  async function generateQuestions() {
+    allAnswers.strengths = getChecked('strengths');
+    allAnswers.tools = getChecked('tools');
+    allAnswers.otherTools = document.getElementById('otherTools').value.trim();
+    allAnswers.proudWork = document.getElementById('proudWork').value.trim();
+    allAnswers.dontWant = document.getElementById('dontWant').value.trim();
+
+    goToScreen('loadQ');
+    updateProgress(4);
+
+    const prompt = `You are a career transition expert. A person is moving from: "${allAnswers.currentRole}" (${allAnswers.years}) to: "${allAnswers.targetRole}".
+
+Their background:
+- Already done in new direction: ${allAnswers.alreadyDone.join(', ') || 'nothing yet'}
+- Often asked to help with: ${allAnswers.askedFor.join(', ')}
+- Self-initiated at work: ${allAnswers.selfInit.join(', ')}
+- Strongest when: ${allAnswers.strengths.join(', ')}
+- Tools used: ${allAnswers.tools.join(', ')} ${allAnswers.otherTools}
+- Proud of: ${allAnswers.proudWork}
+- Does NOT want in new role: ${allAnswers.dontWant}
+
+Generate exactly 5 follow-up questions that will help uncover transferable skills SPECIFIC to this exact career transition. Focus on concrete behaviours and facts, not opinions. Questions should reveal hidden value from their background that directly applies to the target role.
+
+Return ONLY a JSON array like this:
+[
+  {"q": "question text here"},
+  {"q": "question text here"}
+]
+
+No other text. Just the JSON array.`;
+
+    try {
+      const response = await fetch('/.netlify/functions/claude', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const text = data.content[0].text.trim();
+      const clean = text.replace(/```json|```/g, '').trim();
+      dynamicQuestions = JSON.parse(clean);
+      renderDynamicQuestions();
+      goToScreen(5);
+    } catch (err) {
+      console.error(err);
+      goToScreen(3);
+      alert('Something went wrong. Please check your connection and try again.');
+    }
+  }
+
+  function renderDynamicQuestions() {
+    const container = document.getElementById('dynamicQuestionsContainer');
+    container.innerHTML = '';
+    dynamicQuestions.forEach((q, i) => {
+      container.innerHTML += `
+        <div class="dynamic-question">
+          <div class="q-label">Question ${i + 1}</div>
+          <div class="q-text">${q.q}</div>
+          <textarea id="dq_${i}" placeholder="Be as specific as possible — the more concrete, the better your translation..." rows="3"></textarea>
+        </div>`;
+    });
+  }
+
+  async function generateResult() {
+    const dqAnswers = dynamicQuestions.map((q, i) => ({
+      question: q.q,
+      answer: document.getElementById(`dq_${i}`).value.trim()
+    }));
+
+    allAnswers.dynamicQA = dqAnswers;
+    goToScreen('loadR');
+
+    const prompt = `You are a career transition specialist. Create a professional Transferable Skills Translation document for this person.
+
+CAREER TRANSITION: ${allAnswers.currentRole} → ${allAnswers.targetRole} (${allAnswers.years} experience)
+
+WHAT THEY DO AT WORK:
+- Asked to help with: ${allAnswers.askedFor.join(', ')}
+- Self-initiated: ${allAnswers.selfInit.join(', ')}
+- Strongest when: ${allAnswers.strengths.join(', ')}
+- Tools: ${allAnswers.tools.join(', ')} ${allAnswers.otherTools}
+- Work they're proud of: ${allAnswers.proudWork}
+- Does NOT want in new role: ${allAnswers.dontWant}
+
+ADDITIONAL CONTEXT:
+${dqAnswers.map(qa => `Q: ${qa.question}\nA: ${qa.answer}`).join('\n\n')}
+
+Create a document with these sections:
+
+### Your Transferable Skills — Translated
+[List 6-8 specific skills from their background, each reformulated in the language of ${allAnswers.targetRole}. Format: "Your skill [from old role] = [how it's called and valued in new industry]". Be specific and concrete.]
+
+### How Your Background Gives You an Edge
+[3-4 specific advantages this person has over people who started directly in the target field. Be honest and specific, not generic.]
+
+### ATS Keywords for Your CV & LinkedIn
+[20-25 keywords and phrases used in ${allAnswers.targetRole} job descriptions that match their actual skills. Separate by commas.]
+
+### How to Position Your Experience
+[2-3 concrete sentences they can use to introduce themselves in cover letters or interviews — connecting their past to their future. Should sound human, not corporate.]
+
+### One Thing to Address Proactively
+[The one gap or concern a hiring manager will likely have, and one honest way to address it.]
+
+Write in plain English. Be specific to their actual transition — not generic career advice. Avoid corporate jargon.`;
+
+    try {
+      const response = await fetch('/.netlify/functions/claude', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const resultText = data.content[0].text;
+
+      document.getElementById('resultSubtitle').textContent =
+        `${allAnswers.currentRole} → ${allAnswers.targetRole}`;
+
+      // Render markdown-style headings
+      const formatted = resultText
+        .replace(/### (.*)/g, '<h3>$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      document.getElementById('resultContent').innerHTML = formatted;
+      goToScreen(7);
+
+    } catch (err) {
+      console.error(err);
+      goToScreen(5);
+      alert('Something went wrong generating your translation. Please try again.');
+    }
+  }
+
+  function copyResult() {
+    const text = document.getElementById('resultContent').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = 'Copy to clipboard', 2000);
+    });
+  }
+
+  function restart() {
+    location.reload();
+  }
+
+  // Init
+  updateProgress(1);
+</script>
+</body>
+</html>
