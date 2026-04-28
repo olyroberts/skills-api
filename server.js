@@ -7,6 +7,8 @@ app.use(express.json());
 
 app.post('/api/claude', async (req, res) => {
   try {
+    console.log('Received request:', JSON.stringify(req.body).substring(0, 100));
+    
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -17,9 +19,13 @@ app.post('/api/claude', async (req, res) => {
       body: JSON.stringify(req.body)
     });
 
-    const data = await response.json();
-    res.json(data);
+    const text = await response.text();
+    console.log('Anthropic status:', response.status);
+    console.log('Anthropic response:', text.substring(0, 200));
+
+    res.status(response.status).json(JSON.parse(text));
   } catch (err) {
+    console.log('Error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
