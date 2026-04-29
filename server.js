@@ -24,9 +24,9 @@ app.post('/api/claude', async (req, res) => {
       body: JSON.stringify(req.body)
     });
 
-    const text = await response.text();
+    const data = await response.json();
     console.log('Status:', response.status);
-    res.status(response.status).send(text);
+    res.status(response.status).json(data);
   } catch (err) {
     console.log('Error:', err.message);
     res.status(500).json({ error: err.message });
